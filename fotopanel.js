@@ -5,7 +5,7 @@ fotopanel = function(sel) {
 	var height = 600;
 	
 	var rows = 2;
-	var cols = 3;
+	var cols = 10;
 	var inSpeed = 18;
 	var outSpeed = 10;
 	
@@ -19,7 +19,7 @@ fotopanel = function(sel) {
 	}
 	
 	var sizePanels = function() {
-		$('.fotopanel').css("height", height/rows);
+		$('.fotopanel').css("height",  Math.floor(height/rows));
 	}
 	
 	var setSize = function() {
@@ -42,8 +42,7 @@ fotopanel = function(sel) {
 			panelsPerLine[i] = [];
 			html += "<div>";
 			for(var j=0;j<cols+1;j++) {
-				html += "<div style='float:left;' class='fotopanel panel"+countPanels+"'>";
-				html += i+" / "+j;
+				html += "<div style='width:0;float:left;' class='fotopanel panel"+countPanels+"'>";				
 				html += "</div>";
 				panelsPerLine[i][j] = ".panel"+countPanels;
 				linePerPanel[".panel"+countPanels] = i;
@@ -84,8 +83,8 @@ fotopanel = function(sel) {
 		w = Math.floor(w);
 		
 		//$('.panel'+nextPanel).css("width", 0);
-		img.height = h;
-		img.width = w;
+		img.height =  Math.floor(h);
+		img.width =  Math.floor(w);
 		//$('.panel'+nextPanel).html(img);
 		
 		
@@ -111,7 +110,7 @@ fotopanel = function(sel) {
 		var w = 99999;
 		var pn = "";
 		for(var i=0;i<anz;i++) {
-			if(pn=="" || $(panelsPerLine[line][i]).width()<w) {
+			if(pn=="" || $(panelsPerLine[line][i]).width()<w-1) {
 				pn = panelsPerLine[line][i];
 				w = $(panelsPerLine[line][i]).width();
 			}
@@ -121,19 +120,6 @@ fotopanel = function(sel) {
 	
 	var findOther = function(panel) {
 		var line = findLine(panel);
-		/*
-		var anz = panelsPerLine[line].length;
-		var w = 99999;
-		var pn = "";
-		for(var i=0;i<anz;i++) {
-			if(panel==panelsPerLine[line][i]) continue;
-			if(pn=="" || $(panelsPerLine[line][i]).width()<w) {
-				pn = panelsPerLine[line][i];
-				w = $(panelsPerLine[line][i]).width();
-			}
-		}
-		return pn;
-		*/
 		
 		var anz = panelsPerLine[line].length;
 		do {
@@ -145,15 +131,15 @@ fotopanel = function(sel) {
 	
 	var fadeLock = false;
 	
-	var fadeIn = function(selector, w, line, otherPanel) {
+	var fadeIn = function(selector, zielw, line, otherPanel) {
 		var wd = $(selector).width();
 		var wdOther = $(otherPanel).width();
 		
 		fadeLock = true;
 		//console.log([wd,w]);
-		if(wd<w) {
+		if(wd<zielw) {
 			wd += inSpeed;
-			if(wd>w) wd = w;
+			if(wd>zielw) wd = zielw;
 			$(selector).css("width", wd);
 			
 			var gesamtW = wd;
@@ -189,14 +175,6 @@ fotopanel = function(sel) {
 						if(W<0) W=0;
 						other2Width[i] = Math.floor(W);
 						
-						/*
-						var W = $(other2[i]).width();
-						W-=outSpeed;
-						gesamtW-=outSpeed;
-						if(W<0) W=0;
-						$(other2[i]).css("width", Math.floor(W));
-						*/
-						
 						if(gesamtW<width) break;
 					}
 				};
@@ -212,18 +190,19 @@ fotopanel = function(sel) {
 				gesamtW += wdiv;
 				var img = $(panelsPerLine[line][i]).find("img")[0];
 				var wimg = $(img).width();
-				var M = wdiv/2 - wimg/2;
+				
+				var M = Math.floor(wdiv/2 - wimg/2);
 				$(img).css("margin-left", M);
 			}
 			if(gesamtW>=width) {
 				for(var i=0;i<panelsPerLine[line].length;i++) {
-					var img = $(panelsPerLine[line][i]).find("img")[0];
+					var img = $(panelsPerLine[line][i]);
 					var wimg = $(img).width();
-					$(img).css("width", wimg-1);
+					$(panelsPerLine[line][i]).css("width", wimg-1);
 				}
 			}
 			
-			requestAnimationFrame(function() {fadeIn(selector, w, line, otherPanel); });
+			requestAnimationFrame(function() {fadeIn(selector, zielw, line, otherPanel); });
 			
 		} else {
 			fadeLock = false;
