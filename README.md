@@ -6,7 +6,7 @@ with fotopanel a display can be automatically filled with images.
 Each newly added image is placed in a free space. 
 The other images in the row are reduced in size.
 
-##example
+## example
 
 https://jsfiddle.net/csyuj0kv/
 
